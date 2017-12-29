@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState,convertToRaw,RichUtils,Modifier,CompositeDecorator,AtomicBlockUtils} from 'draft-js';
 import styled  from "styled-components";
+import {getCurrentBlock,addNewBlock} from "./utils";
 
 const styles = {
     root: {
@@ -83,6 +84,7 @@ const Video = (props) => {
 };
 
 const Media = (props) => {
+    console.log("mmmkmm",props.block.getEntityAt(0));
     const entity = props.contentState.getEntity(
         props.block.getEntityAt(0)
     );
@@ -136,12 +138,13 @@ class MyEditor extends React.Component {
     this.state = {editorState: EditorState.createEmpty(decorator)};
     this.onChange = (editorState) => {
         const contentState = editorState.getCurrentContent();
-        const rawJson = convertToRaw(contentState);
-        const jsonStr = JSON.stringify(rawJson, null, 1);
+        //const rawJson = convertToRaw(contentState);
+        const jsonStr = JSON.stringify(contentState.toJSON(), null, 1);
         const plainText = contentState.getPlainText();
         const blocksStr= JSON.stringify(contentState.getBlocksAsArray().map(item=>item.toJSON()), null, 1);
-        console.log("blocksStr",blocksStr);
-        this.setState({editorState,plainText,jsonStr,blocksStr});
+        //console.log("blocksStr",blocksStr);
+        const currentblocksStr= JSON.stringify(getCurrentBlock(editorState), null, 1);
+        this.setState({editorState,plainText,jsonStr,blocksStr,currentblocksStr});
         this.getEntityAtCursor(editorState);
     };
 
@@ -181,7 +184,7 @@ class MyEditor extends React.Component {
       const newContentState = Modifier.applyEntity(contentstate, selectionState, entityKey);
       const newEditorState = EditorState.push(this.state.editorState, newContentState, 'apply-entity');
       this.onChange(newEditorState);
-      console.log("createLink end");
+      //console.log("createLink end");
   }
   createMedia= (e) => {
         e.preventDefault();
@@ -203,10 +206,11 @@ class MyEditor extends React.Component {
               ' '
          );
         this.onChange(editorStateNew);
-    }
-    createBlock= (e) => {
-
-    }
+  }
+  createBlock= (e) => {
+        var editorStateNew=addNewBlock(this.state.editorState);
+        this.onChange(editorStateNew);
+  }
     // _onBoldClick() {
   //     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
   // }
@@ -216,6 +220,7 @@ class MyEditor extends React.Component {
           <button onClick={this.onChangeColor}>红色</button>
           <button onClick={this.createLink}>创建链接</button>
           <button onClick={this.createMedia}>创建图片</button>
+          <button onClick={this.createBlock}>添加块</button>
           <MyEditorWrapper>
                   <Editor editorState={this.state.editorState}
                           onChange={this.onChange}
@@ -225,11 +230,17 @@ class MyEditor extends React.Component {
                   />
           </MyEditorWrapper>
           <div>recive:{this.state.retrievedData}</div>
+          <div>jsonStr：</div>
           <pre>
               {this.state.jsonStr}
           </pre>
+           <div>blocksStr：</div>
            <pre>
               {this.state.blocksStr}
+           </pre>
+            <div>currentblocksStr：</div>
+            <pre>
+              {this.state.currentblocksStr}
            </pre>
         </div>
     );
