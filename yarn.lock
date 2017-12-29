@@ -1962,6 +1962,16 @@ draft-js-buttons@^2.0.1:
   dependencies:
     union-class-names "^1.0.0"
 
+draft-js-image-plugin@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/draft-js-image-plugin/download/draft-js-image-plugin-2.0.1.tgz#08b4c33b8d795d673512cdbf6eb2c02f748455c9"
+  dependencies:
+    decorate-component-with-props "^1.0.2"
+    find-with-regex "^1.0.2"
+    immutable "~3.7.4"
+    prop-types "^15.5.8"
+    union-class-names "^1.0.0"
+
 draft-js-inline-toolbar-plugin@^2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/draft-js-inline-toolbar-plugin/download/draft-js-inline-toolbar-plugin-2.0.1.tgz#cab5ca08eef74b0de8a3754a080d5f3e06be7f29"
