@@ -1,21 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState,convertToRaw,RichUtils,Modifier,CompositeDecorator,AtomicBlockUtils} from 'draft-js';
-import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
-import {
-    ItalicButton,
-    BoldButton,
-    UnderlineButton,
-    CodeButton,
-    HeadlineOneButton,
-    HeadlineTwoButton,
-    HeadlineThreeButton,
-    UnorderedListButton,
-    OrderedListButton,
-    BlockquoteButton,
-    CodeBlockButton,
-} from 'draft-js-buttons';
-
+import styled  from "styled-components";
 
 const styles = {
     root: {
@@ -115,6 +101,18 @@ const Media = (props) => {
     return media;
 };
 
+var MyEditorWrapper=styled.div`
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  cursor: text;
+  padding: 16px;
+  border-radius: 2px;
+  margin-bottom: 2em;
+  box-shadow: inset 0px 1px 8px -3px #ABABAB;
+  background: #fefefe;
+`;
+
+
 class MyEditor extends React.Component {
   state={
       plainText:"",
@@ -137,11 +135,13 @@ class MyEditor extends React.Component {
 
     this.state = {editorState: EditorState.createEmpty(decorator)};
     this.onChange = (editorState) => {
-        const contentState = this.state.editorState.getCurrentContent();
+        const contentState = editorState.getCurrentContent();
         const rawJson = convertToRaw(contentState);
         const jsonStr = JSON.stringify(rawJson, null, 1);
         const plainText = contentState.getPlainText();
-        this.setState({editorState,plainText,jsonStr});
+        const blocksStr= JSON.stringify(contentState.getBlocksAsArray().map(item=>item.toJSON()), null, 1);
+        console.log("blocksStr",blocksStr);
+        this.setState({editorState,plainText,jsonStr,blocksStr});
         this.getEntityAtCursor(editorState);
     };
 
@@ -201,8 +201,11 @@ class MyEditor extends React.Component {
               newEditorState,
               entityKey,
               ' '
-          );
+         );
         this.onChange(editorStateNew);
+    }
+    createBlock= (e) => {
+
     }
     // _onBoldClick() {
   //     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
@@ -213,17 +216,21 @@ class MyEditor extends React.Component {
           <button onClick={this.onChangeColor}>红色</button>
           <button onClick={this.createLink}>创建链接</button>
           <button onClick={this.createMedia}>创建图片</button>
-          <Editor editorState={this.state.editorState}
-                  onChange={this.onChange}
-                  customStyleMap={this.styleMap}
-                  blockRendererFn={mediaBlockRenderer}
-                  // handleKeyCommand={this.handleKeyCommand}
-          />
+          <MyEditorWrapper>
+                  <Editor editorState={this.state.editorState}
+                          onChange={this.onChange}
+                          customStyleMap={this.styleMap}
+                          blockRendererFn={mediaBlockRenderer}
+                          // handleKeyCommand={this.handleKeyCommand}
+                  />
+          </MyEditorWrapper>
           <div>recive:{this.state.retrievedData}</div>
           <pre>
               {this.state.jsonStr}
           </pre>
-
+           <pre>
+              {this.state.blocksStr}
+           </pre>
         </div>
     );
   }

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SimpleInlineToolbarEditor from "./SimpleInlineToolbarEditor";
-
+import MyEditor from "./MyEditor";
 class App extends Component {
   render() {
     return (
-        <SimpleInlineToolbarEditor />
+        <div>
+            <MyEditor />
+        </div>
     );
   }
 }
